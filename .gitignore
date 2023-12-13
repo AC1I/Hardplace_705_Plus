@@ -1,0 +1,7 @@
+**/Data\ Sheets/
+**/ESP32/build/
+*.zip
+*.fzz
+*.txt
+*.jpg
+desktop.ini
