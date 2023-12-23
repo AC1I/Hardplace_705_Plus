@@ -24,7 +24,7 @@ public:
   }
   ~CIC_705MasterDevice() {
     while (!m_BoundDevices.isEmpty()) {
-      delete m_BoundDevices.getValue(0);
+      delete m_BoundDevices.get(0);
       m_BoundDevices.remove(0);
     }
   }
@@ -242,8 +242,8 @@ public:
   }
   void unbindDevice(CBoundDevice& rDevice) {
     for (int nIndex(0); nIndex < m_BoundDevices.getSize(); nIndex++) {
-      if (&static_cast<CBoundDevice&>(*m_BoundDevices.getValue(nIndex)) == &rDevice) {
-        delete m_BoundDevices.getValue(nIndex);
+      if (&static_cast<CBoundDevice&>(*m_BoundDevices.get(nIndex)) == &rDevice) {
+        delete m_BoundDevices.get(nIndex);
         m_BoundDevices.remove(nIndex);
         break;
       }
@@ -260,11 +260,11 @@ public:
           || Resp.isFrequencyResponse()
           || Resp.isOperatingModeResponse()) {
         for (int nIndex(0); nIndex < m_BoundDevices.getSize(); nIndex++) {
-          m_BoundDevices.getValue(nIndex)->onNewPacket(pauchBuf, cBytes, *this);
+          m_BoundDevices.get(nIndex)->onNewPacket(pauchBuf, cBytes, *this);
         }
       } else {
         for (int nIndex(0); nIndex < m_BoundDevices.getSize(); nIndex++) {
-          CICOMBoundDevice* pDevice(m_BoundDevices.getValue(nIndex));
+          CICOMBoundDevice* pDevice(m_BoundDevices.get(nIndex));
           if (pDevice && pDevice->getAddress() == Resp.ToAddress()) {
             pDevice->onNewPacket(pauchBuf, cBytes, *this);
             break;

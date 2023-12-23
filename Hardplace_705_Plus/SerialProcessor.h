@@ -33,7 +33,7 @@ public:
       size_t       stRead(readBytesUntil(0xFD, pauchBuf, stBuf));
 
       for (int nIndex(0); nIndex < getSize(); nIndex++) {
-        getValue(nIndex)->onNewPacket(pauchBuf, stRead, *this);
+        get(nIndex)->onNewPacket(pauchBuf, stRead, *this);
       }
       delete[] pauchBuf;
     } else {
@@ -45,7 +45,7 @@ public:
       if (available()) {
         String sData(readStringUntil(';'));
         for (int nIndex(0); nIndex < getSize(); nIndex++) {
-          getValue(nIndex)->onNewPacket(sData, *this);
+          get(nIndex)->onNewPacket(sData, *this);
         }
       }
     }

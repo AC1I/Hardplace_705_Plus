@@ -65,7 +65,7 @@ public:
   }
   void unbind(CBoundDevice& rDevice) {
     for (int nIndex(0); nIndex < getSize(); nIndex++) {
-      if (getValue(nIndex) == &rDevice) {
+      if (get(nIndex) == &rDevice) {
         remove(nIndex);
         break;
       }
@@ -74,7 +74,7 @@ public:
   bool isBound(CBoundDevice& rDevice) {
     bool fBound(false);
     for (int nIndex(0); (!fBound && nIndex < getSize()); nIndex++) {
-      fBound = getValue(nIndex) == &rDevice;
+      fBound = get(nIndex) == &rDevice;
     }
     return fBound;
   }

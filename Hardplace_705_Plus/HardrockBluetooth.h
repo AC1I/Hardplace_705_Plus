@@ -38,7 +38,7 @@ public:
     bool fBound(false);
 
     for (int nIndex(0); (!fBound && nIndex < m_BoundDevices.getSize()); nIndex++) {
-      fBound = (eDevice == m_BoundDevices.getValue(nIndex)->deviceClass());
+      fBound = (eDevice == m_BoundDevices.get(nIndex)->deviceClass());
     }
     return fBound;
   }
@@ -49,7 +49,7 @@ public:
       size_t       stRead(readBytesUntil(0xFD, pauchBuf, stBuf));
 
       for (int nIndex(0); nIndex < m_BoundDevices.getSize(); nIndex++) {
-        m_BoundDevices.getValue(nIndex)->onNewPacket(pauchBuf, stRead, *this);
+        m_BoundDevices.get(nIndex)->onNewPacket(pauchBuf, stRead, *this);
       }
       delete[] pauchBuf;
     } else {
@@ -61,7 +61,7 @@ public:
       if (available()) {
         String sData(readStringUntil(';'));
         for (int nIndex(0); nIndex < m_BoundDevices.getSize(); nIndex++) {
-          m_BoundDevices.getValue(nIndex)->onNewPacket(sData, *this);
+          m_BoundDevices.get(nIndex)->onNewPacket(sData, *this);
         }
       }
     }

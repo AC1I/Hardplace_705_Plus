@@ -144,7 +144,7 @@ protected:
       if (available()) {
         String sData(readStringUntil(';'));
         for (int nIndex(0); nIndex < m_BoundDevices.getSize(); nIndex++) {
-          m_BoundDevices.getValue(nIndex)->onNewPacket(sData, *this);
+          m_BoundDevices.get(nIndex)->onNewPacket(sData, *this);
         }
       }
     }
