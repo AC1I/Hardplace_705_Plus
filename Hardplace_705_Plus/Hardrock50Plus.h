@@ -122,7 +122,7 @@ public:
       String Rsp(readString());
       if (isValidResponse(Rsp, Cmd)  // There is some strangness where keying mode comes up invalid
           && Rsp.length() > 6) {     // on powerup (HRMD144;) or such,
-        setKeyingMode(true);         // if this is the case switch it to PTT
+        setKeyingMode(false);         // if this is the case switch it to PTT OFF
         write(Cmd);
         Rsp = readString();
       }

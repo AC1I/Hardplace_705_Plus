@@ -8,10 +8,23 @@
 
 // ESP32 Pinout Reference: Which GPIO pins should you use?
 // https://randomnerdtutorials.com/esp32-pinout-reference-gpios/
+// https://github.com/espressif/arduino-esp32/blob/master/cores/esp32/HardwareSerial.cpp
+#define RTS0 22
+#define CTS0 19
+#define RXD0 SOC_RX0  // 3
+#define TXD0 SOC_TX0  // 1
+
+#if CONFIG_IDF_TARGET_ESP32
+#define RTS1 11
+#define CTS1 6
+#define RXD1 9
+#define TXD1 10
+
 #define RTS2 14
 #define CTS2 15
 #define RXD2 16
 #define TXD2 17
+#endif
 
 #define PAIR_CMD 36
 #define DISCONNECT_CMD 39
@@ -31,7 +44,7 @@ Bounce          PairCmd;
 Bounce          DisconnectCmd;
 
 const String slaveName = "ICOM BT(IC-705)";
-const String masterName = "Hardplace 705+V3";
+const String masterName = "Hardplace 705+";
 
 #if 0
 esp_spp_api.h
@@ -136,6 +149,7 @@ void loop() {
     while (SerialBT.available() > 0) {
       rSerial.write(SerialBT.read());
     }
+
   } else {
     while (rSerial.available() > 0) {
       rSerial.read();

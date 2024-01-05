@@ -28,11 +28,11 @@ void LowAlarmISR(void);
    Serial1 -> Hardrock A
    Serial2 -> Hardrock B
    Serial3 -> Hardrock Bluetooth B
-   Serial4 -> Icom Bluetooth
-   Serial5 -> Hardrock Bluetooth A
+   Serial4 -> Hardrock Bluetooth A
+   Serial5 -> Unused
    Serial6 -> Unused
    Serial7 -> Unused
-   Serial8 -> Unused
+   Serial8 -> Icom Bluetooth
 
    The Teensy 4.1 has a logic controlled power switch on the USB Host 5V power pin
    so the connector will not have 5V power until the USBHost begin() function is called.
@@ -42,8 +42,8 @@ void LowAlarmISR(void);
 const float                   fHighTempAlarmC(80);   // Keep junction temperature below 95C for longest life
 CTraceDevice                  Tracer(TRACE_GLOBAL);  // Global for tracing constuctors of global/objects
 CTeensy                       Teensy;
-CIC_705MasterDevice           IC_705(Teensy, 0xE1, Serial4, 115200);
-CHardrockBluetoothSlaveDevice BluetoothA(Serial5, "Hardplace A", 115200);
+CIC_705MasterDevice           IC_705(Teensy, 0xE1, Serial8, 115200);
+CHardrockBluetoothSlaveDevice BluetoothA(Serial4, "Hardplace A", 115200);
 CHardrockBluetoothSlaveDevice BluetoothB(Serial3, "Hardplace B", 115200);
 CHardrockPair                 HardrockA(CTeensy::eHardrock::A, Serial1, Teensy, IC_705, 0xE2);
 CHardrockPair                 HardrockB(CTeensy::eHardrock::B, Serial2, Teensy, IC_705, 0xE3);

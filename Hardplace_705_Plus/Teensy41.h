@@ -96,56 +96,56 @@ private:
 
 public:
   enum eTeensy41Pins {
-    HR_TX_A,  // 0
+    HR_TX_A,            // 0
     HR_RX_A,
-    HR_Available_A,
-    HR_Available_B,
-    Tuner_Key,
-
-    TunerStart,  // 5
     HR_6M_PTT_Enable,
+    HR_10M_PTT_Enable,
+	HR_12M_PTT_Enable,
+	
+    HR_15M_PTT_Enable,  // 5
+    HR_17M_PTT_Enable,
     HR_TX_B,
     HR_RX_B,
-    HR_10M_PTT_Enable,
+    HR_20M_PTT_Enable,
 
-    PTT_PWR,  // 10
-    PTT_A_Enable,
-    PTT_B_Enable,  // 12
-    BT_TUNER_PWR,  // INTERNAL_LED
+    HR_30M_PTT_Enable,  // 10
+    HR_40M_PTT_Enable,
+    HR_60M_PTT_Enable,  // 12
+    TUNER_PWR,          // INTERNAL_LED
     BT_HR_B_RXD,
 
-    BT_HR_B_TXD,  // 15
-    BT_ICOM_TXD,
-    BT_ICOM_RXD,
-    SDA,  // SDA
-    SCL,  // SCL
-
-    BT_HR_A_RXD,  // 20
+    BT_HR_B_TXD,        // 15
     BT_HR_A_TXD,
-    A8,
-    A9,  // 23
-    HR_12M_PTT_Enable,
+    BT_HR_A_RXD,
+    HR_Available_B,
+    HR_Available_A,
 
-    HR_15M_PTT_Enable,  // 25
-    HR_17M_PTT_Enable,
-    HR_20M_PTT_Enable,
-    HR_30M_PTT_Enable,
-    HR_40M_PTT_Enable,
+    RX5,                // 20
+    TX5,
+    PTT_B_Enable,
+    PTT_A_Enable,       // 23
+    TX6,
 
-    HR_60M_PTT_Enable,  // 30
+    RX6,                // 25
     HR_80M_PTT_Enable,
     HR_160M_PTT_Enable,
-    BT_ICOM_CTS,
+    RX7,
+    TX7,
+
+    CRX3,               // 30
+    CTX3,
+    PTT_PWR,
+    BT_ICOM_CTS,        // 33
+    BT_ICOM_TXD,
+
+    BT_ICOM_RXD,        // 35
     BT_ICOM_RTS,
-
-    BT_ICOM_PAIR,  // 35
-    BT_ICOM_STATE,
     BT_ICOM_DISCONNECT,
-    A14,
-    A15,
+    BT_ICOM_STATE,
+    BT_ICOM_PAIR,
 
-    A16,  // 40
-    A22
+    Tuner_Key,          // 40
+    TunerStart
   };
   /*
        Serial1 -> Hardrock A
@@ -187,56 +187,56 @@ public:
     Serial6.end();
     Serial7.end();
 
-    // HR_TX_A,                 // 0
+    // HR_TX_A,                               // 0
     // HR_RX_A,
-    pinMode(HR_Available_A, INPUT);
-    pinMode(HR_Available_B, INPUT);
-    pinMode(Tuner_Key, OUTPUT), digitalWrite(Tuner_Key, HIGH);
-
-    pinMode(TunerStart, OUTPUT), digitalWrite(TunerStart, LOW);  // 5
     pinMode(HR_6M_PTT_Enable, INPUT_PULLUP);
-    // HR_TX_B,
-    // HR_RX_B,
     pinMode(HR_10M_PTT_Enable, INPUT_PULLUP);
-
-    pinMode(PTT_PWR, OUTPUT), digitalWrite(PTT_PWR, LOW);  // 10
-    pinMode(PTT_A_Enable, OUTPUT), digitalWrite(PTT_A_Enable, LOW);
-    pinMode(PTT_B_Enable, OUTPUT), digitalWrite(PTT_B_Enable, LOW);
-    pinMode(BT_TUNER_PWR, OUTPUT), digitalWrite(BT_TUNER_PWR, LOW);
-    // BT_HR_B_RXD,
-
-    // BT_HR_B_TXD, // 15
-    // BT_ICOM_TXD,
-    // BT_ICOM_RXD,
-    // SDA;
-    // SDL;
-
-    // BT_HR_A_RXD;  // 20
-    // BT_HR_A_TXD;
-    // A8;
-    // A9;  // 23
     pinMode(HR_12M_PTT_Enable, INPUT_PULLUP);
 
-    pinMode(HR_15M_PTT_Enable, INPUT_PULLUP);  // 25
+    pinMode(HR_15M_PTT_Enable, INPUT_PULLUP);  // 5
     pinMode(HR_17M_PTT_Enable, INPUT_PULLUP);
+    // HR_TX_B,
+    // HR_RX_B,
     pinMode(HR_20M_PTT_Enable, INPUT_PULLUP);
-    pinMode(HR_30M_PTT_Enable, INPUT_PULLUP);
-    pinMode(HR_40M_PTT_Enable, INPUT_PULLUP);
 
-    pinMode(HR_60M_PTT_Enable, INPUT_PULLUP);  // 30
+    pinMode(HR_30M_PTT_Enable, INPUT_PULLUP);  // 10
+    pinMode(HR_40M_PTT_Enable, INPUT_PULLUP);
+    pinMode(HR_60M_PTT_Enable, INPUT_PULLUP);
+    pinMode(TUNER_PWR, OUTPUT), digitalWrite(TUNER_PWR, LOW);
+    // BT_HR_B_RXD,
+
+    // BT_HR_B_TXD,                            // 15
+    // BT_HR_A_RXD,
+    // BT_HR_A_TXD,
+    pinMode(HR_Available_B, INPUT);
+    pinMode(HR_Available_A, INPUT);
+
+    // RX5,                                    // 20
+    // TX5,
+    pinMode(PTT_B_Enable, OUTPUT), digitalWrite(PTT_B_Enable, LOW);
+    pinMode(PTT_A_Enable, OUTPUT), digitalWrite(PTT_A_Enable, LOW);
+    // TX6
+
+    // RX6,                                    // 25
     pinMode(HR_80M_PTT_Enable, INPUT_PULLUP);
     pinMode(HR_160M_PTT_Enable, INPUT_PULLUP);
-    // BT_ICOM_CTS;
+    // RX7,
+    // TX7,
+
+    // CRX3                                    // 30
+    // CTX3
+    pinMode(PTT_PWR, OUTPUT), digitalWrite(PTT_PWR, LOW);
+    // BT_ICOM_CTS,
+    // BT_ICOM_TXD,
+
+    // BT_ICOM_RXD,                            // 35
     // BT_ICOM_RTS,
-
-    pinMode(BT_ICOM_PAIR, OUTPUT), digitalWrite(BT_ICOM_PAIR, LOW);  // 35
-    pinMode(BT_ICOM_STATE, INPUT);
     pinMode(BT_ICOM_DISCONNECT, OUTPUT), digitalWrite(BT_ICOM_DISCONNECT, LOW);
-    // A14;
-    // A15;
+    pinMode(BT_ICOM_STATE, INPUT);
+    pinMode(BT_ICOM_PAIR, OUTPUT), digitalWrite(BT_ICOM_PAIR, LOW);
 
-    // A16;  // 40
-    // A22;
+    pinMode(Tuner_Key, OUTPUT), digitalWrite(Tuner_Key, HIGH);   // 40
+    pinMode(TunerStart, OUTPUT), digitalWrite(TunerStart, LOW);
 
     m_Tune.attach(TunerStart, OUTPUT);
     m_Tune.interval(m_uDebounceInterval);
@@ -262,7 +262,7 @@ public:
 
 public:
   virtual void TunerPower(bool bOn) const {
-    digitalWrite(BT_TUNER_PWR, (bOn) ? HIGH : LOW);
+    digitalWrite(TUNER_PWR, (bOn) ? HIGH : LOW);
   }
   virtual void TunerPowerOn(void) const {
     TunerPower(true);
