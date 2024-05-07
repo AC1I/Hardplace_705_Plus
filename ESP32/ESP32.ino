@@ -26,6 +26,8 @@
 #define TXD2 17
 #endif
 
+#define USEHWFLOWCTRL
+
 #define PAIR_CMD 36
 #define DISCONNECT_CMD 39
 #define CONNECTED_IND 32
@@ -104,8 +106,12 @@ void setup() {
   pinMode(CONNECTED_IND, OUTPUT), digitalWrite(CONNECTED_IND, LOW);
 
 #if !defined IO_On_SERIAL_PORT_MONITOR
+#if defined USEHWFLOWCTRL
   rSerial.setPins(RXD2, TXD2, CTS2, RTS2);
   rSerial.setHwFlowCtrlMode();
+#else
+  rSerial.setPins(RXD2, TXD2);
+#endif
 #endif
   rSerial.begin(115200);
 

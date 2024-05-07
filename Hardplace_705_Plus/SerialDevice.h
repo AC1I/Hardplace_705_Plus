@@ -354,16 +354,28 @@ private:
     return StreamType;
   }
 
+#if TEENSYDUINO < 159
   static HardwareSerial& HardwareSerialDevice(const Stream& rStream) {
     return (streamType(rStream) == HardwareSerialDeviceType)
              ? static_cast<HardwareSerial&>(const_cast<Stream&>(rStream))
              : Serial1;
   }
+#else
+  static HardwareSerialIMXRT& HardwareSerialDevice(const Stream& rStream) {
+    return (streamType(rStream) == HardwareSerialDeviceType)
+             ? static_cast<HardwareSerialIMXRT&>(const_cast<Stream&>(rStream))
+             : Serial1;
+  }
+#endif
 
 private:
-  Type               m_Type;
-  Stream&            m_rStream;
-  HardwareSerial&    m_rHsDevice;
+  Type    m_Type;
+  Stream& m_rStream;
+#if TEENSYDUINO < 159
+  HardwareSerial& m_rHsDevice;
+#else
+  HardwareSerialIMXRT& m_rHsDevice;
+#endif
   usb_serial_class&  m_rUsb1Device;
   usb_serial2_class& m_rUsb2Device;
   usb_serial3_class& m_rUsb3Device;

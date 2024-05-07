@@ -1,3 +1,14 @@
+#if 0
+In Teensy libraries edit "...\USBHost_t36\serial.cpp" to include Hardrock USB
+
+USBSerialBase::product_vendor_mapping_t USBSerialBase::pid_vid_mapping[] = {
+	// FTDI mappings. 
+	{0x0403, 0x6001, USBSerialBase::FTDI, 0},
+	{0x0403, 0x8088, USBSerialBase::FTDI, 1},  // 2 devices try to claim at interface level
+	{0x0403, 0x6010, USBSerialBase::FTDI, 1},  // Also Dual Serial, so claim at interface level
+	{0x0403, 0x6015, USBSerialBase::FTDI, 0},  // Hardrock Seral
+#endif
+
 #include <elapsedMillis.h>
 #include <InternalTemperature.h>
 
@@ -12,7 +23,9 @@
 #include "HardrockPair.h"
 #include "SerialProcessor.h"
 
-extern "C" uint32_t set_arm_clock(uint32_t frequency);
+extern "C" {
+  uint32_t set_arm_clock(uint32_t frequency);
+}
 
 namespace {
 

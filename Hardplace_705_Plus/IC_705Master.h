@@ -12,6 +12,9 @@
 #include "SerialDevice.h"
 #include "BoundDevice.h"
 
+#define USEHWFLOWCTRL
+//#define TRACEIO
+
 class CIC_705MasterDevice : public CSerialDevice, private CICOMReq, public CBoundDevice {
 public:
   CIC_705MasterDevice(
@@ -35,10 +38,13 @@ public:
     uint8_t uchCTSPin(0);
 
     begin();
+  #if defined USEHWFLOWCTRL
     if (m_rBluetooth.BluetoothFlowControl(uchRTSPin, uchCTSPin)) {
+      // Tracer().TraceLn(String("Using Hardware Flow Control with ESP32, RTS on Pin " + String(uchRTSPin) + " CTS on Pin " + String(uchCTSPin)));
       attachRts(uchRTSPin);
       attachCts(uchCTSPin);
     }
+  #endif
     return true;
   }
   virtual void Task(void) {
@@ -256,6 +262,10 @@ public:
       size_t    cBytes(readBytesUntil(0xFD, pauchBuf, stBuf));
       CICOMResp Resp(pauchBuf, cBytes);
 
+#if defined TRACEIO
+      Tracer().TraceHex(pauchBuf, cBytes);
+#endif
+
       if (Resp.isBroadcast()
           || Resp.isFrequencyResponse()
           || Resp.isOperatingModeResponse()) {
@@ -317,6 +327,9 @@ public:
 
 private:
   size_t write(const uint8_t* pauchBuf, size_t stBuf) {
+  #if defined TRACEIO
+    Tracer().TraceHex(pauchBuf, stBuf);
+  #endif
     return CSerialDevice::write(pauchBuf, stBuf);
   }
 

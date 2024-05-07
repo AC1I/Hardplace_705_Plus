@@ -14,5 +14,7 @@
 #define DUAL_SERIAL
 #endif
 
-void Delay(uint32_t millis);
+extern "C" {
+  void Delay(uint32_t millis);
+}
 #endif

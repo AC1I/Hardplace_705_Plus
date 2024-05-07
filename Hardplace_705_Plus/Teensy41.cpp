@@ -132,8 +132,11 @@ int CTeensy::getMetersMapIndex(uint32_t ulMeters) {
 }
 
 // Command support
-extern CIC_705MasterDevice&
-     IC705(void);
+extern "C" {
+  CIC_705MasterDevice& IC705(void);
+  void printStatus(CSerialDevice & rPrintDevice);
+}
+
 void CTeensy::pair_IC_705(void) {
   IC705().clearPairing();
 }
@@ -381,8 +384,8 @@ void CTeensy::onPrintPwrMaps(const String& rsCmd, CSerialDevice& rSrcDevice) {
     rSrcDevice.flush();
   }
 }
+
 void CTeensy::onPrintStatus(void* pthis, const String& rsCmd, CSerialDevice& rSrcDevice) {
-  extern void printStatus(CSerialDevice & rPrintDevice);
   printStatus(rSrcDevice);
 }
 void CTeensy::onHardrockAvailable(void* pthis, const String& rsCmd, CSerialDevice& rSrcDevice) {
