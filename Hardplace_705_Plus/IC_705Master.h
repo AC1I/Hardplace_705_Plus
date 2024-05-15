@@ -38,13 +38,13 @@ public:
     uint8_t uchCTSPin(0);
 
     begin();
-  #if defined USEHWFLOWCTRL
+#if defined USEHWFLOWCTRL
     if (m_rBluetooth.BluetoothFlowControl(uchRTSPin, uchCTSPin)) {
       // Tracer().TraceLn(String("Using Hardware Flow Control with ESP32, RTS on Pin " + String(uchRTSPin) + " CTS on Pin " + String(uchCTSPin)));
       attachRts(uchRTSPin);
       attachCts(uchCTSPin);
     }
-  #endif
+#endif
     return true;
   }
   virtual void Task(void) {
@@ -187,6 +187,14 @@ public:
     return fReturn;
   }
 
+  bool getDataMode(bool& rDataMode) {
+    return CICOMReq::getDataMode(*this, rDataMode);
+  }
+
+  bool equalizeVFOs(void) {
+    return CICOMReq::equalizeVFOs(*this);
+  }
+
 public:
   void setICOMAddress(uint8_t uchAddress) {
     return CICOMReq::setICOMAddress(uchAddress);
@@ -263,6 +271,7 @@ public:
       CICOMResp Resp(pauchBuf, cBytes);
 
 #if defined TRACEIO
+      Tracer().Trace("-< ");
       Tracer().TraceHex(pauchBuf, cBytes);
 #endif
 
@@ -327,9 +336,10 @@ public:
 
 private:
   size_t write(const uint8_t* pauchBuf, size_t stBuf) {
-  #if defined TRACEIO
+#if defined TRACEIO
+    Tracer().Trace("-> ");
     Tracer().TraceHex(pauchBuf, stBuf);
-  #endif
+#endif
     return CSerialDevice::write(pauchBuf, stBuf);
   }
 

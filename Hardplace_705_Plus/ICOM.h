@@ -365,6 +365,42 @@ public:
     return false;
   }
 
+  bool getDataMode(CSerialDevice& rOutputDev, bool& isDataMode) {
+    if (getICOMAddress() == 0xA4) {  // The 1A commands differ by Transciever, don't issue if not IC-705
+      uint8_t DataModeReq[] = { 0xFE, 0xFE, getICOMAddress(), getRigAddress(), 0x1A, 0x06, 0xFD };
+
+      if (write(rOutputDev, DataModeReq, sizeof DataModeReq) > 0) {
+        unsigned char auchResp[80];
+        size_t        cRead;
+        do {
+          cRead = getResponse(rOutputDev, auchResp, sizeof auchResp);
+        } while (cRead
+                 && (cRead != 9
+                     || !CICOMResp(auchResp, cRead).isResponse()
+                     || auchResp[4] != 0x1A
+                     || auchResp[5] != 0x06));
+                     
+        if (cRead > 7
+            && auchResp[4] == 0x1A
+            && auchResp[5] == 0x06) {
+          isDataMode = auchResp[6] == 0x01;
+        }
+
+        return (cRead >= 9
+                && auchResp[4] == 0x1A
+                && auchResp[5] == 0x06);
+      }
+    }
+    return false;
+  }
+
+  bool equalizeVFOs(CSerialDevice& rOutputDev) {
+    uint8_t equalizeVFOsCmd[] = { 0xFE, 0xFE, getICOMAddress(), getRigAddress(), 0x07, 0xA0, 0xFD };
+
+    return (write(rOutputDev, equalizeVFOsCmd, sizeof equalizeVFOsCmd)
+            && getRigResponse(rOutputDev));
+  }
+
 public:
   void setICOMAddress(uint8_t uchAddress) {
     m_uchICOMAddr = uchAddress;

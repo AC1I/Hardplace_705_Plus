@@ -31,7 +31,7 @@ namespace {
 
 void HardplaceTask(void);
 void ManageBindings(void);
-void ReadRFPower(bool fNow = false);
+void QueryIC_705(bool fNow = false);
 bool BindByMap(CHardrockPair& rHardrock);
 void BindByPort(CHardrockPair& rHardrock);
 void HighAlarmISR(void);
@@ -262,7 +262,7 @@ void HardplaceTask(void) {
         IC_705.ReadRFPower(true);
       }
     }
-    ReadRFPower();
+    QueryIC_705();
   } else if (wasConnected) {
     Teensy.onDisconnect();
   }
@@ -297,13 +297,17 @@ void HardplaceTask(void) {
   }
 }
 
-void ReadRFPower(bool fNow) {
+void QueryIC_705(bool fNow) {
   static elapsedMillis eLastRFPowerQuery(1000);
+  static elapsedMillis eLastFreqPoll(0);
 
   if (fNow
       || eLastRFPowerQuery >= 1000) {
     eLastRFPowerQuery = 0;
     IC_705.ReadRFPower();
+  } else if (eLastRFPowerQuery >= 500 && eLastFreqPoll >= 5000) {
+    IC_705.ReadOperatingFreq();
+    eLastFreqPoll = 0;
   }
 }
 
@@ -314,7 +318,7 @@ void ManageBindings(void) {
         BindByPort(HardrockA);
       }
       if (IC_705.isConnected()) {
-        ReadRFPower();
+        QueryIC_705();
       }
     }
   } else if (HardrockA.isBound()) {
@@ -327,7 +331,7 @@ void ManageBindings(void) {
         BindByPort(HardrockB);
       }
       if (IC_705.isConnected()) {
-        ReadRFPower();
+        QueryIC_705();
       }
     }
   } else if (HardrockB.isBound()) {

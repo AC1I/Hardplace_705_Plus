@@ -26,6 +26,12 @@ void CTeensy::onNewPacket(const uint8_t* puPacket, size_t stPacket, CSerialDevic
       if (getMetersMapIndex(getFrequencyMeters()) >= 0) {
         digitalWrite(PTT_A_Enable, PTTEnabled(eHardrock::A));
         digitalWrite(PTT_B_Enable, PTTEnabled(eHardrock::B));
+
+        bool isDataMode(false);
+        if (rIC_705.getDataMode(isDataMode)
+            && isDataMode) {
+          rIC_705.equalizeVFOs();
+        }
         rIC_705.ReadRFPower();
       } else {
         digitalWrite(PTT_A_Enable, LOW);
@@ -195,6 +201,7 @@ void CTeensy::onReboot(const String& rsCmd, CSerialDevice& rSrcDevice) {
     m_Watchdog.reset();
   }
   rSrcDevice.println("");
+  IC705().DisconnectBoundDevice();
   reboot();
 }
 void CTeensy::onClearMap(void* pthis, const String& rsCmd, CSerialDevice& rSrcDevice) {
@@ -311,7 +318,7 @@ void CTeensy::onHelp(const String& rsCmd, CSerialDevice& rSrcDevice) {
   rSrcDevice.println("HPRE - Reboot"), Delay(10);
   rSrcDevice.println("HPCM - Clear USB to Hardrock assignments"), Delay(10);
   rSrcDevice.println("HPDI - Disconnect from the IC-705"), Delay(10);
-//  rSrcDevice.println("HPAT - Issue AT command to HC-05 \"HPAT+Version?\" or \"HPATAT+Version?\""), Delay(10);
+  //  rSrcDevice.println("HPAT - Issue AT command to HC-05 \"HPAT+Version?\" or \"HPATAT+Version?\""), Delay(10);
   rSrcDevice.println("HPPT - Display PTT enable/disable settings"), Delay(10);
   rSrcDevice.println("HPPM - Print power maps"), Delay(10);
   rSrcDevice.println("HPPS - Print device status"), Delay(10);
