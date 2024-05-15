@@ -3,7 +3,7 @@
 
 This is the third generation of the Hardplace 705+ appliance.  Hardplace 705+ provides the following services:
 
- 1.Band/Frequency synchronization between the IC-705 and up to two Hardrock amplifiers.
+ 1. Band/Frequency synchronization between the IC-705 and up to two Hardrock amplifiers.
  
  2. IC-705 tuner integration with the optional Hardrock Tuner.
  
