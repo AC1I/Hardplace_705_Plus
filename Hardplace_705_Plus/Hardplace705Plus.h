@@ -14,6 +14,8 @@
 #define DUAL_SERIAL
 #endif
 
+#define HAS_AH705_EMULATION
+
 extern "C" {
   void Delay(uint32_t millis);
 }
