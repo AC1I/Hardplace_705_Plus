@@ -96,12 +96,12 @@ private:
 
 public:
   enum eTeensy41Pins {
-    HR_TX_A,            // 0
+    HR_TX_A,  // 0
     HR_RX_A,
     HR_6M_PTT_Enable,
     HR_10M_PTT_Enable,
-	HR_12M_PTT_Enable,
-	
+    HR_12M_PTT_Enable,
+
     HR_15M_PTT_Enable,  // 5
     HR_17M_PTT_Enable,
     HR_TX_B,
@@ -114,37 +114,37 @@ public:
     TUNER_PWR,          // INTERNAL_LED
     BT_HR_B_RXD,
 
-    BT_HR_B_TXD,        // 15
+    BT_HR_B_TXD,  // 15
     BT_HR_A_TXD,
     BT_HR_A_RXD,
     HR_Available_B,
     HR_Available_A,
 
-    RX5,                // 20
+    RX5,  // 20
     TX5,
     PTT_B_Enable,
-    PTT_A_Enable,       // 23
+    PTT_A_Enable,  // 23
     TX6,
 
-    RX6,                // 25
+    RX6,  // 25
     HR_80M_PTT_Enable,
     HR_160M_PTT_Enable,
     RX7,
     TX7,
 
-    CRX3,               // 30
+    CRX3,  // 30
     CTX3,
     PTT_PWR,
-    BT_ICOM_CTS,        // 33
+    BT_ICOM_CTS,  // 33
     BT_ICOM_TXD,
 
-    BT_ICOM_RXD,        // 35
+    BT_ICOM_RXD,  // 35
     BT_ICOM_RTS,
     BT_ICOM_DISCONNECT,
     BT_ICOM_STATE,
     BT_ICOM_PAIR,
 
-    Tuner_Key,          // 40
+    Tuner_Key,  // 40
     TunerStart
   };
   /*
@@ -235,7 +235,7 @@ public:
     pinMode(BT_ICOM_STATE, INPUT);
     pinMode(BT_ICOM_PAIR, OUTPUT), digitalWrite(BT_ICOM_PAIR, LOW);
 
-    pinMode(Tuner_Key, OUTPUT), digitalWrite(Tuner_Key, HIGH);   // 40
+    pinMode(Tuner_Key, OUTPUT), digitalWrite(Tuner_Key, HIGH);  // 40
     pinMode(TunerStart, OUTPUT), digitalWrite(TunerStart, LOW);
 
     m_Tune.attach(TunerStart, OUTPUT);
@@ -263,6 +263,7 @@ public:
 public:
   virtual void TunerPower(bool bOn) const {
     digitalWrite(TUNER_PWR, (bOn) ? HIGH : LOW);
+    Delay(50);
   }
   virtual void TunerPowerOn(void) const {
     TunerPower(true);
@@ -298,14 +299,15 @@ public:
   }
   virtual void TunerEnable(bool fEnable = true) {
     if (m_fTunerEnabled != fEnable) {
+      TunerPower(fEnable);
       if (fEnable) {
         m_Tune.attach(TunerStart, INPUT_PULLUP);
       } else {
         m_Tune.attach(TunerStart, OUTPUT);
         digitalWrite(TunerStart, LOW);
       }
-      TunerPower(fEnable);
       m_fTunerEnabled = fEnable;
+      m_Tune.update();
     }
   }
   virtual bool TunerEnabled(void) {
@@ -322,6 +324,7 @@ public:
   }
   virtual void TunerKey(bool bOn) {
     digitalWrite(Tuner_Key, (bOn) ? LOW : HIGH);
+    delay(10);
   }
   virtual unsigned long TuneCmdDuration(void) {
     return m_Tune.currentDuration();

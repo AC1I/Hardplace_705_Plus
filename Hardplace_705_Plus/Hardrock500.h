@@ -401,8 +401,11 @@ public:
     CHardrock::autolock(*this);
     if (availableForWrite()) {
       String Cmd("HRTT;");
-      write(Cmd);
-      String Rsp(readString());
+      String Rsp;
+      do {
+        write(Cmd);
+        Rsp = readString();
+      } while (Rsp.length() < 5);
       return (isValidResponse(Rsp, Cmd)
               && Rsp.charAt(4) == '1');
     }

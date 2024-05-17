@@ -104,7 +104,7 @@ public:
     if (m_rTuner.Tune()) {  // Start~ command from IC-705
       m_rTuner.Tuning(true);
       if (TuneEnabled()) {
-        bool fHasAH705(false);
+        bool fHasAH705(CAN_TUNE_10W);
 #if defined HAS_AH705_EMULATION
         do {
           CICOMReq Icom(m_r705.getRigAddress());
@@ -116,22 +116,15 @@ public:
 #endif
         if (fHasAH705) {  // Tuner set to AH-705, tune normally
           m_Tracer.TraceLn("Tuning Normally AH-705 mode");
-
-          m_rHardrock.Tune();                           // Tell the Hardrock to tune. It takes somewhere between .5 and 1 second to switch over to tuning mode
-          for (unsigned uTry = 0; uTry < 20; uTry++) {  // Spin awaiting switch over to tuning mode
-            delay(50);
+          m_rHardrock.Tune();  // Tell the Hardrock to tune. It takes somewhere between .5 and 1 second to switch over to tuning mode
+          delay(10);
+          m_rTuner.TunerKey(true);
+          if (m_rHardrock.isTuning()) {
+            for (elapsedMillis uTimeout(0); (m_rHardrock.isTuning() && uTimeout <= 10000); delay(50));  // Wait for the Hardrock to complete tuning, Limit to 10 seconds
             if (m_rHardrock.isTuning()) {
-              break;
+              m_rHardrock.Tune();  // Cancel tune (Same command as tune, acts as a toggle)
             }
           }
-          m_rTuner.TunerKey(true);                                                                  // Tell the IC-705 to send the tuning signal
-          for (unsigned uInterval = 0; (m_rHardrock.isTuning() && uInterval < 200); uInterval++) {  // Wait for the Hardrock to complete tuning, Limit to 10 seconds
-            delay(50);
-          }
-          if (m_rHardrock.isTuning()) {
-            m_rHardrock.Tune();  // Cancel tune (Same command as tune, acts as a toggle)
-          }
-
           m_rTuner.TunerKey(false);  // Tell the IC-705 to stop sending the tuning signal
         } else if (!m_fTuning) {     // The IC 705 transmits a 10 watt tuning signal
           m_fTuning = true;          // ... and the IC-705 won't let us change it
