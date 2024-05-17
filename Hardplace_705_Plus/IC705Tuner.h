@@ -117,15 +117,22 @@ public:
         if (fHasAH705) {  // Tuner set to AH-705, tune normally
           m_Tracer.TraceLn("Tuning Normally AH-705 mode");
           m_rHardrock.Tune();  // Tell the Hardrock to tune. It takes somewhere between .5 and 1 second to switch over to tuning mode
-          delay(10);
-          m_rTuner.TunerKey(true);
-          if (m_rHardrock.isTuning()) {
+                               // Timing is important here, If we don't key fast enough the IC-705 will cancel the tuning
+          if (m_rHardrock.isTuning(true)) {
+            m_rTuner.TunerKey(true);
             for (elapsedMillis uTimeout(0); (m_rHardrock.isTuning() && uTimeout <= 10000); delay(50));  // Wait for the Hardrock to complete tuning, Limit to 10 seconds
             if (m_rHardrock.isTuning()) {
-              m_rHardrock.Tune();  // Cancel tune (Same command as tune, acts as a toggle)
+              m_rHardrock.Tune();      // Cancel tune (Same command as tune, acts as a toggle)
+            }
+            m_rTuner.TunerKey(false);  // Tell the IC-705 to stop sending the tuning signal
+          } else { // Missed the window, cancel tune
+            bool isTuning(m_rHardrock.isTuning());
+
+            for (elapsedMillis uTimeout(0); (!isTuning && uTimeout <= 2000); isTuning = m_rHardrock.isTuning());
+            if (isTuning) {
+              m_rHardrock.Tune();      // Cancel tune (Same command as tune, acts as a toggle)
             }
           }
-          m_rTuner.TunerKey(false);  // Tell the IC-705 to stop sending the tuning signal
         } else if (!m_fTuning) {     // The IC 705 transmits a 10 watt tuning signal
           m_fTuning = true;          // ... and the IC-705 won't let us change it
           m_Tracer.TraceLn("Tuning via Proxy, ICOM Phase");

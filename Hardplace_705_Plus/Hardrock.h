@@ -43,7 +43,7 @@ public:
   CHardrock(
     CSerialDevice& rDevice)
     : CSerialDevice(rDevice),
-      m_IntercommandPeriod(200), m_LastReadWrite(0) {
+      m_IntercommandPeriod(100), m_LastReadWrite(0) {
   }
 
   virtual ~CHardrock() {
@@ -119,8 +119,8 @@ public:
     return Response;
   }
 
-  size_t write(const String& rCmd) {
-    while (m_LastReadWrite <= m_IntercommandPeriod) {
+  size_t write(const String& rCmd, bool fNoDelay = false) {
+    while (!fNoDelay && m_LastReadWrite <= m_IntercommandPeriod) {
       Delay(1);
     }
     clear();
@@ -171,7 +171,7 @@ public:
   virtual float       getDCInputVoltage(void) = 0;
   virtual bool        isATUPresent(void) = 0;
   virtual void        Tune(void) = 0;
-  virtual bool        isTuning(void) = 0;
+  virtual bool        isTuning(bool fNoDelay = false) = 0;
   virtual unsigned    getActiveAntenna(void) = 0;
   virtual bool        SaveATUSettings(void) = 0;
   virtual bool        isTunerByPassed(void) = 0;

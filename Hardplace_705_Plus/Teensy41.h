@@ -35,7 +35,7 @@ Interface ITuner {
   virtual void          TunerDisable(void) = 0;
   virtual bool          Tune(void) = 0;
   virtual void          Tuning(bool isTuning) = 0;
-  virtual bool          isTuning(void) = 0;
+  virtual bool          isTuning(bool fNoDelay = false) = 0;
   virtual bool          TuneComplete(void) = 0;
   virtual void          TunerKey(bool bOn) = 0;
   virtual void          TunerEnablePTT(bool fEnable) = 0;
@@ -342,7 +342,7 @@ public:
   virtual void Tuning(bool isTuning) {
     m_isTuning = isTuning;
   }
-  virtual bool isTuning(void) {
+  virtual bool isTuning(bool fNoDelay = false) {
     return m_isTuning;
   }
 

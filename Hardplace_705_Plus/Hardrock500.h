@@ -397,15 +397,19 @@ public:
     }
   }
 
-  bool isTuning(void) {
+  bool isTuning(bool fNoDelay = false) {
     CHardrock::autolock(*this);
     if (availableForWrite()) {
       String Cmd("HRTT;");
       String Rsp;
-      do {
-        write(Cmd);
+
+      for (int nTry(0); nTry < 3; nTry++) { // Hardrock can go deaf while tuning
+        write(Cmd, fNoDelay);
         Rsp = readString();
-      } while (Rsp.length() < 5);
+        if (Rsp.length()) {
+          break;
+        }
+      }
       return (isValidResponse(Rsp, Cmd)
               && Rsp.charAt(4) == '1');
     }

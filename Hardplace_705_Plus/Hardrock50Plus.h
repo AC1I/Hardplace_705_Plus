@@ -228,7 +228,7 @@ public:
       write(Cmd);
     }
   }
-  virtual bool isTuning(void) {
+  virtual bool isTuning(bool fNoDelay = false) {
     CHardrock::autolock(*this);
     if (availableForWrite()) {
       String Cmd("HRTMS?;");

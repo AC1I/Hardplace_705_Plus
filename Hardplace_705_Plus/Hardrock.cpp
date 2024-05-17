@@ -128,7 +128,7 @@ private:
     return true;
   }
   virtual void Tune(void) {}
-  virtual bool isTuning(void) {
+  virtual bool isTuning(bool fNoDelay = false) {
     return false;
   }
   virtual unsigned getActiveAntenna(void) {
