@@ -239,6 +239,7 @@ void HardplaceTask(void) {
   static elapsedMillis     eLastInit(0);
 
   if (isConnected) {
+
     if (!wasConnected) {
       Teensy.onConnect();
       if (!IC_705.getCI_V_Transcieve()) {
@@ -271,8 +272,8 @@ void HardplaceTask(void) {
   ManageBindings();
 
   Teensy.TunerEnable(
-    (HardrockA && HardrockA.isATUPresent() && Teensy.SendEnabled(CTeensy::eHardrock::A))
-    || (HardrockB && HardrockB.isATUPresent() && Teensy.SendEnabled(CTeensy::eHardrock::B)));
+    (HardrockA && Teensy.HardrockAvailable(CTeensy::eHardrock::A) && HardrockA.isATUPresent() && Teensy.SendEnabled(CTeensy::eHardrock::A))
+    || (HardrockB && Teensy.HardrockAvailable(CTeensy::eHardrock::B) && HardrockB.isATUPresent() && Teensy.SendEnabled(CTeensy::eHardrock::B)));
 
   if (!wasHardrockConnected
       && ((Teensy.HardrockAvailable(CTeensy::eHardrock::A) && Teensy.PTTEnabled(CTeensy::eHardrock::A))
