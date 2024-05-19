@@ -1,3 +1,4 @@
+#include <memory>
 #if !defined HARDROCKUSB_H
 #define HARDROCKUSB_H
 
@@ -17,6 +18,7 @@ public:
     : CSerialDevice(rUSB, 19200),
       CBoundDevice(static_cast<CBoundDevice::eDeviceClass>(CTeensy::eBoundDeviceTypes::USBHost)),
       m_rUSBDevice(static_cast<USBSerial_BigBuffer&>(rUSB)),
+      m_pHardrock(0),
       m_sDeviceName(m_pszUnknown),
       m_sModel(m_pszUnknown),
       m_tryInterval(10000),
@@ -82,8 +84,14 @@ public:
   void bind(CBoundDevice& rDevice) {
     m_BoundDevices.bind(rDevice);
   }
+  void bind(std::shared_ptr<CHardrock> pHardrock) {
+    m_pHardrock = pHardrock;
+  }
   void unbind(CBoundDevice& rDevice) {
     m_BoundDevices.unbind(rDevice);
+  }
+  void unbind(std::shared_ptr<CHardrock>) {
+    m_pHardrock.reset();
   }
   bool isBound(void) {
     return m_BoundDevices.getSize() > 0;
@@ -151,19 +159,28 @@ protected:
   }
   virtual void onNewPacket(const String& rsPacket, CSerialDevice& rSrcDevice) {
     if (CHardrock::isHardrockPacket(rsPacket)) {
-      write(rsPacket.c_str(), rsPacket.length());
+      if (m_pHardrock.get()) {
+        CHardrock::autolock(*m_pHardrock.get());
+
+        m_pHardrock.get()->CommandBegin();
+        write(rsPacket.c_str(), rsPacket.length());
+        m_pHardrock.get()->CommandComplete();
+      } else {
+        write(rsPacket.c_str(), rsPacket.length());
+      }
     }
   }
 
 
 private:
-  USBSerial_BigBuffer& m_rUSBDevice;
-  CBoundDeviceList     m_BoundDevices;
-  const char*          m_pszUnknown = "Unknown";
-  String               m_sDeviceName;
-  volatile String      m_sModel;
-  elapsedMillis        m_tryInterval;
-  volatile bool        m_HardrockFound;
+  USBSerial_BigBuffer&       m_rUSBDevice;
+  std::shared_ptr<CHardrock> m_pHardrock;
+  CBoundDeviceList           m_BoundDevices;
+  const char*                m_pszUnknown = "Unknown";
+  String                     m_sDeviceName;
+  volatile String            m_sModel;
+  elapsedMillis              m_tryInterval;
+  volatile bool              m_HardrockFound;
 #if defined USE_THREADS
   Threads::Mutex m_Mutex;
 #endif

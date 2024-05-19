@@ -147,6 +147,7 @@ public:
   void bind(CHardrockBluetoothSlaveDevice& rBluetooth, CHardrockUSB& rUSB) {
     rBluetooth.bind(rUSB);
     rUSB.bind(rBluetooth);
+    rUSB.bind(m_pHardrock);
     m_pBluetooth = &rBluetooth;
     m_pUSB = &rUSB;
   }
@@ -154,6 +155,7 @@ public:
     if (m_pBluetooth && m_pUSB) {
       m_pBluetooth->unbind(*m_pUSB);
       m_pUSB->unbind(*m_pBluetooth);
+      m_pUSB->unbind(m_pHardrock);
     }
     m_pUSB = 0, m_pBluetooth = 0;
   }

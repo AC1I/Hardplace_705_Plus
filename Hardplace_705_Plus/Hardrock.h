@@ -71,6 +71,16 @@ protected:
   }
 
 public:
+  void CommandBegin(void) {
+    while (m_LastReadWrite <= m_IntercommandPeriod) {
+      Delay(1);
+    }
+  }
+  void CommandComplete(void) {
+    m_LastReadWrite = 0;
+  }
+
+public:
   bool isValidResponse(String& rRsp, String& rCmd, unsigned nCmdLen = 4) {
     return (rRsp.length() > nCmdLen
             && rRsp.substring(0, nCmdLen) == rCmd.substring(0, nCmdLen)
@@ -199,7 +209,7 @@ public:
     return m_Mutex;
   }
 
-protected:
+public:
   class autolock {
   public:
     autolock(Threads::Mutex& rMutex)
