@@ -387,7 +387,7 @@ private:
     for (size_t cBytes(getResponse(pauchBuf.get(), stBuf)); (cBytes || available()); cBytes = getResponse(pauchBuf.get(), stBuf)) {
       if (cBytes) {
         rSrcDevice.write(pauchBuf.get(), cBytes);
-        if (Tracer().availableForWrite() >= int(cBytes * 3)) {
+        if (Tracer().Enabled() && Tracer().availableForWrite() >= int(cBytes * 3)) {
           Tracer().TraceHex(pauchBuf.get(), cBytes);
         }
       }
@@ -417,7 +417,7 @@ private:
          cBytes = rSrcDevice.readBytesUntil(0xFD, pauchBuf.get(), stBuf)) {
       if (cBytes) {
         write(pauchBuf.get(), cBytes);
-        if (Tracer().availableForWrite() >= int(cBytes * 3)) {
+        if (Tracer().Enabled() && Tracer().availableForWrite() >= int(cBytes * 3)) {
           Tracer().TraceHex(pauchBuf.get(), cBytes);
         }
       }
