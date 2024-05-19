@@ -272,8 +272,8 @@ void HardplaceTask(void) {
   ManageBindings();
 
   Teensy.TunerEnable(
-    (HardrockA && Teensy.HardrockAvailable(CTeensy::eHardrock::A) && HardrockA.isATUPresent() && Teensy.SendEnabled(CTeensy::eHardrock::A))
-    || (HardrockB && Teensy.HardrockAvailable(CTeensy::eHardrock::B) && HardrockB.isATUPresent() && Teensy.SendEnabled(CTeensy::eHardrock::B)));
+    (Teensy.HardrockAvailable(CTeensy::eHardrock::A) && HardrockA && HardrockA.isATUPresent() && Teensy.SendEnabled(CTeensy::eHardrock::A))
+    || (Teensy.HardrockAvailable(CTeensy::eHardrock::B) && HardrockB && HardrockB.isATUPresent() && Teensy.SendEnabled(CTeensy::eHardrock::B)));
 
   if (!wasHardrockConnected
       && ((Teensy.HardrockAvailable(CTeensy::eHardrock::A) && Teensy.PTTEnabled(CTeensy::eHardrock::A))
