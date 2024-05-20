@@ -306,7 +306,9 @@ void QueryIC_705(bool fNow) {
       || eLastRFPowerQuery >= 1000) {
     eLastRFPowerQuery = 0;
     IC_705.ReadRFPower();
-  } else if (eLastRFPowerQuery >= 500 && eLastFreqPoll >= 5000) {
+  } else if ((Teensy.HardrockAvailable(CTeensy::eHardrock::A)
+              || Teensy.HardrockAvailable(CTeensy::eHardrock::B))
+             && eLastRFPowerQuery >= 500 && eLastFreqPoll >= 5000) {
     IC_705.ReadOperatingFreq();
     eLastFreqPoll = 0;
   }
