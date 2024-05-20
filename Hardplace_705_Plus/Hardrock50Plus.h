@@ -28,7 +28,7 @@ public:
 
 public:
   virtual void setFrequency(uint64_t ullFrequencyHz) {
-    m_FreqSupported = ullFrequencyHz < 30000000;
+    m_FreqSupported = ullFrequencyHz <= 54000000;
     CHardrock::autolock(*this);
     if (availableForWrite()) {
       char achBuf[32];
@@ -79,8 +79,11 @@ public:
     unsigned uBand(99);
 
     if (ulFrequency100MHz == 0) {
-      if (ulFrequencyHz >= 28000000
-          && ulFrequencyHz <= 29700000) {
+      if (ulFrequencyHz >= 50000000
+          && ulFrequencyHz <= 54000000) {
+        uBand = 0;  // 0 = 6M
+      } else if (ulFrequencyHz >= 28000000
+                 && ulFrequencyHz <= 29700000) {
         uBand = 1;  // 1 = 10M
       } else if (ulFrequencyHz >= 24890000
                  && ulFrequencyHz <= 24990000) {
@@ -122,7 +125,7 @@ public:
       String Rsp(readString());
       if (isValidResponse(Rsp, Cmd)  // There is some strangness where keying mode comes up invalid
           && Rsp.length() > 6) {     // on powerup (HRMD144;) or such,
-        setKeyingMode(false);         // if this is the case switch it to PTT OFF
+        setKeyingMode(false);        // if this is the case switch it to PTT OFF
         write(Cmd);
         Rsp = readString();
       }

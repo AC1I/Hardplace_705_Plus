@@ -189,8 +189,8 @@ public:
 
 public:
   virtual void setFrequency(uint64_t ullFrequencyHz) {
-    CHardrock::autolock(*this);
     m_FreqSupported = ullFrequencyHz < 30000000;
+    CHardrock::autolock(*this);
     if (availableForWrite()) {
       char achBuf[32];
       sprintf(achBuf, "FA%011llu;", ullFrequencyHz);
@@ -403,7 +403,7 @@ public:
       String Cmd("HRTT;");
       String Rsp;
 
-      for (int nTry(0); nTry < 3; nTry++) { // Hardrock can go deaf while tuning
+      for (int nTry(0); nTry < 3; nTry++) {  // Hardrock can go deaf while tuning
         write(Cmd, fNoDelay);
         Rsp = readString();
         if (Rsp.length()) {

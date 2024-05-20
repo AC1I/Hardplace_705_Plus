@@ -28,8 +28,8 @@ public:
 
 public:
   virtual void setFrequency(uint64_t ullFrequencyHz) {
+    m_FreqSupported = ullFrequencyHz <= 54000000;
     CHardrock::autolock(*this);
-    m_FreqSupported = ullFrequencyHz < 30000000;
     if (availableForWrite()) {
       char achBuf[32];
       sprintf(achBuf, "FA%011llu;", ullFrequencyHz);
@@ -74,8 +74,11 @@ public:
     unsigned uBand(99);
 
     if (ulFrequency100MHz == 0) {
-      if (ulFrequencyHz >= 28000000
-          && ulFrequencyHz <= 29700000) {
+      if (ulFrequencyHz >= 50000000
+          && ulFrequencyHz <= 54000000) {
+        uBand = 0;  // 0 = 6M
+      } else if (ulFrequencyHz >= 28000000
+                 && ulFrequencyHz <= 29700000) {
         uBand = 1;  // 1 = 10M
       } else if (ulFrequencyHz >= 24890000
                  && ulFrequencyHz <= 24990000) {
