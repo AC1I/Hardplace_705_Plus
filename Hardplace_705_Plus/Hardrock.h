@@ -41,9 +41,10 @@
 class CHardrock : public CSerialDevice {
 public:
   CHardrock(
-    CSerialDevice& rDevice)
+    CSerialDevice& rDevice,
+    uint32_t uIntercommandPeriod = 100)
     : CSerialDevice(rDevice),
-      m_IntercommandPeriod(100), m_LastReadWrite(0) {
+      m_IntercommandPeriod(uIntercommandPeriod), m_LastReadWrite(0) {
   }
 
   virtual ~CHardrock() {
