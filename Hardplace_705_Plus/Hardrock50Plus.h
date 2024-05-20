@@ -9,7 +9,7 @@
 class CHardrock50Plus : public CHardrock {
 public:
   CHardrock50Plus(CSerialDevice& rDevice)
-    : CHardrock(rDevice),
+    : CHardrock(rDevice, 150),
       m_Interval(0), m_fConnected(false), m_fLastConnState(false), m_FreqSupported(false) {
   }
   virtual ~CHardrock50Plus() {
