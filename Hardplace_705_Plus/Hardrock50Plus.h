@@ -10,7 +10,7 @@ class CHardrock50Plus : public CHardrock {
 public:
   CHardrock50Plus(CSerialDevice& rDevice)
     : CHardrock(rDevice, 150),
-      m_Interval(0), m_fConnected(false), m_fLastConnState(false), m_FreqSupported(false) {
+      m_Interval(0), m_fConnected(false), m_fLastConnState(false), m_FreqSupported(false), m_fPTTOn(false) {
   }
   virtual ~CHardrock50Plus() {
   }
@@ -125,7 +125,7 @@ public:
       String Rsp(readString());
       if (isValidResponse(Rsp, Cmd)  // There is some strangness where keying mode comes up invalid
           && Rsp.length() > 6) {     // on powerup (HRMD144;) or such,
-        setKeyingMode(false);        // if this is the case switch it to PTT OFF
+        setKeyingMode(m_fPTTOn);     // if this is the case switch it to PTT OFF
         write(Cmd);
         Rsp = readString();
       }
@@ -133,10 +133,11 @@ public:
           && Rsp.length() >= 5
           && Rsp.charAt(4) >= '0'
           && Rsp.charAt(4) <= '3') {
+        m_fPTTOn = (Rsp.charAt(4) - '0') > 0;
         return Rsp.charAt(4) - '0';
       }
     }
-    return -1;
+    return (m_fPTTOn) ? 1 : 0;
   }
   virtual void setKeyingMode(bool bPTTOn) {
     // HRMD1; 0 (OFF), 1 (PTT), 2 (COR), 3 (QRP)
@@ -146,6 +147,7 @@ public:
       Cmd += (bPTTOn) ? "1" : "0";
       Cmd += ";";
       write(Cmd);
+      m_fPTTOn = bPTTOn;
     }
   }
   virtual float getCurrentPowerVSWR(char chWhich) {
@@ -291,5 +293,6 @@ private:
   bool          m_fConnected;
   bool          m_fLastConnState;
   bool          m_FreqSupported;
+  bool          m_fPTTOn;
 };
 #endif
