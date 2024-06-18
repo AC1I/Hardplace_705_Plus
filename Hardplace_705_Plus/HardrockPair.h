@@ -63,7 +63,7 @@ public:
         m_fWasAttached = true;
         m_StartupDelay = 0;
       } else if (!m_pHardrock
-                 && m_StartupDelay > 7000
+                 && m_StartupDelay >= 10000
                  && !m_fWasCreated) {
 #if defined USE_THREADS
         m_fWasCreated = true;
