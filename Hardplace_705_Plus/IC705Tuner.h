@@ -64,6 +64,7 @@
 #include "IC_705Master.h"
 #include "ICOM.h"
 #include "Hardrock.h"
+#include "Hardrock500.h"
 #include "Tracer.h"
 
 
@@ -104,37 +105,39 @@ public:
     if (m_rTuner.Tune()) {  // Start~ command from IC-705
       m_rTuner.Tuning(true);
       if (TuneEnabled()) {
-        bool fHasAH705(CAN_TUNE_10W);
+        bool fTuneNormally(String(m_rHardrock.Model()) == String(CHardrock500::modelName()));
 #if defined HAS_AH705_EMULATION
         do {
           CICOMReq Icom(m_r705.getRigAddress());
 #if defined USE_THREADS
           Threads::Scope wait(m_r705);
 #endif
-          fHasAH705 = Icom.isTunerSelect_AH_705(m_r705);
+          fTuneNormally = Icom.isTunerSelect_AH_705(m_r705);
         } while (0);
 #endif
-        if (fHasAH705) {  // Tuner set to AH-705, tune normally
+        if (fTuneNormally) {  // Tuner set to AH-705, tune normally
           m_Tracer.TraceLn("Tuning Normally AH-705 mode");
           m_rHardrock.Tune();  // Tell the Hardrock to tune. It takes somewhere between .5 and 1 second to switch over to tuning mode
                                // Timing is important here, If we don't key fast enough the IC-705 will cancel the tuning
           if (m_rHardrock.isTuning(true)) {
             m_rTuner.TunerKey(true);
-            for (elapsedMillis uTimeout(0); (m_rHardrock.isTuning() && uTimeout <= 10000); delay(50));  // Wait for the Hardrock to complete tuning, Limit to 10 seconds
+            for (elapsedMillis uTimeout(0); (m_rHardrock.isTuning() && uTimeout <= 10000); delay(50))
+              ;  // Wait for the Hardrock to complete tuning, Limit to 10 seconds
             if (m_rHardrock.isTuning()) {
-              m_rHardrock.Tune();      // Cancel tune (Same command as tune, acts as a toggle)
+              m_rHardrock.Tune();  // Cancel tune (Same command as tune, acts as a toggle)
             }
             m_rTuner.TunerKey(false);  // Tell the IC-705 to stop sending the tuning signal
-          } else { // Missed the window, cancel tune
+          } else {                     // Missed the window, cancel tune
             bool isTuning(m_rHardrock.isTuning());
 
-            for (elapsedMillis uTimeout(0); (!isTuning && uTimeout <= 2000); isTuning = m_rHardrock.isTuning());
+            for (elapsedMillis uTimeout(0); (!isTuning && uTimeout <= 2000); isTuning = m_rHardrock.isTuning())
+              ;
             if (isTuning) {
-              m_rHardrock.Tune();      // Cancel tune (Same command as tune, acts as a toggle)
+              m_rHardrock.Tune();  // Cancel tune (Same command as tune, acts as a toggle)
             }
           }
-        } else if (!m_fTuning) {     // The IC 705 transmits a 10 watt tuning signal
-          m_fTuning = true;          // ... and the IC-705 won't let us change it
+        } else if (!m_fTuning) {  // The IC 705 transmits a 10 watt tuning signal
+          m_fTuning = true;       // ... and the IC-705 won't let us change it
           m_Tracer.TraceLn("Tuning via Proxy, ICOM Phase");
           m_rTuner.TunerEnablePTT(false);  // Disable PTT
           m_rTuner.TunerKey(true);         // Tell the IC-705 to send the tuning signal
