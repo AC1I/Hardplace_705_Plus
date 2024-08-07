@@ -24,8 +24,8 @@ void CTeensy::onNewPacket(const uint8_t* puPacket, size_t stPacket, CSerialDevic
 
     if (uPrevBand != getFrequencyMeters()) {
       if (getMetersMapIndex(getFrequencyMeters()) >= 0) {
-        digitalWrite(PTT_A_Enable, PTTEnabled(eHardrock::A));
-        digitalWrite(PTT_B_Enable, PTTEnabled(eHardrock::B));
+        PTTEnable(eHardrock::A, PTTEnabled(eHardrock::A));
+        PTTEnable(eHardrock::B, PTTEnabled(eHardrock::B));
 
         bool isDataMode(false);
         if (rIC_705.getDataMode(isDataMode)
@@ -34,8 +34,8 @@ void CTeensy::onNewPacket(const uint8_t* puPacket, size_t stPacket, CSerialDevic
         }
         rIC_705.ReadRFPower();
       } else {
-        digitalWrite(PTT_A_Enable, LOW);
-        digitalWrite(PTT_B_Enable, LOW);
+        PTTEnable(eHardrock::A, false);
+        PTTEnable(eHardrock::B, false);
       }
     }
   } else if (Resp.isOperatingModeResponse()) {

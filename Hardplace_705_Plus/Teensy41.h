@@ -213,8 +213,8 @@ public:
 
     // RX5,                                    // 20
     // TX5,
-    pinMode(PTT_B_Enable, OUTPUT), digitalWrite(PTT_B_Enable, LOW);
-    pinMode(PTT_A_Enable, OUTPUT), digitalWrite(PTT_A_Enable, LOW);
+    pinMode(PTT_B_Enable, OUTPUT), PTTEnable(eHardrock::B, false);
+    pinMode(PTT_A_Enable, OUTPUT), PTTEnable(eHardrock::A, false);
     // TX6
 
     // RX6,                                    // 25
@@ -332,11 +332,11 @@ public:
   virtual void TunerEnablePTT(bool fEnable) {
     if (fEnable
         && getMetersMapIndex(getFrequencyMeters()) >= 0) {
-      digitalWrite(PTT_A_Enable, PTTEnabled(eHardrock::A));
-      digitalWrite(PTT_B_Enable, PTTEnabled(eHardrock::B));
+      PTTEnable(eHardrock::A, PTTEnabled(eHardrock::A));
+      PTTEnable(eHardrock::B, PTTEnabled(eHardrock::B));
     } else {
-      digitalWrite(PTT_A_Enable, LOW);
-      digitalWrite(PTT_B_Enable, LOW);
+      PTTEnable(eHardrock::A, false);
+      PTTEnable(eHardrock::B, false);
     }
   }
   virtual void Tuning(bool isTuning) {
@@ -712,6 +712,13 @@ public:
       m_USBMap[nIndex].clear();
     }
     Serialize();
+  }
+  void PTTEnable(eHardrock eWhichHardrock, bool bEnabled) {
+    if (eWhichHardrock == eHardrock::A) {
+      digitalWrite(PTT_A_Enable, (bEnabled) ? HIGH : LOW);
+    } else if (eWhichHardrock == eHardrock::B) {
+      digitalWrite(PTT_B_Enable, (bEnabled) ? HIGH : LOW);
+    }
   }
   bool PTTEnabled(eHardrock eWhichHardrock) const {
     int nIndex(getMetersMapIndex());
