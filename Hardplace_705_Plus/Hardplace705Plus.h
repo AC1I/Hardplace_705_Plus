@@ -15,7 +15,6 @@
 #endif
 
 // #define HAS_AH705_EMULATION
-#define CAN_TUNE_10W true
 
 extern "C" {
   void Delay(uint32_t millis);
